@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<!--suppress ALL -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Counter</title>
+</head>
+<body>
+
+<h1>View Counter</h1>
+
+<div th:if="${isAuthenticated}">
+    <p>Welcome,
+        <a th:href="${userProfileUrl}"><span th:text="${userUsername}">User</span></a>
+        (<span th:text="${userName}"></span>)!
+    </p>
+    <p><span th:text="${userEmail}">Email</span></p>
+    <img th:src="${userAvatarUrl}" alt="User Avatar" width="100" height="100"/>
+    <button th:onclick="|window.location.href='/logout'|">Logout</button>
+</div>
+
+<div th:if="${!isAuthenticated}">
+    <p>You are not logged in.</p>
+    <button th:onclick="|window.location.href='/login'|">Login</button>
+</div>
+</body>
+</html>
