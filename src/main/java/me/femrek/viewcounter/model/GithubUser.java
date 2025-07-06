@@ -11,7 +11,7 @@ import java.util.List;
 public class GithubUser {
     @Id
     @Column(name = "gh_id")
-    private Long id;
+    private Integer id;
 
     @Column(name = "gh_username", nullable = false, unique = true)
     private String username;

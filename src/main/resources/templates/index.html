@@ -9,17 +9,16 @@
 
 <h1>View Counter</h1>
 
-<div th:if="${isAuthenticated}">
+<div th:if="${user != null}">
     <p>Welcome,
-        <a th:href="${userProfileUrl}"><span th:text="${userUsername}">User</span></a>
-        (<span th:text="${userName}"></span>)!
+        <a th:href="${user.getProfileUrl()}"><span th:text="${user.getUsername()}">User</span></a>
+        (<span th:text="${user.getFullName()}"></span>)!
     </p>
-    <p><span th:text="${userEmail}">Email</span></p>
-    <img th:src="${userAvatarUrl}" alt="User Avatar" width="100" height="100"/>
+    <img th:src="${user.getAvatarUrl()}" alt="User Avatar" width="100" height="100"/>
     <button th:onclick="|window.location.href='/logout'|">Logout</button>
 </div>
 
-<div th:if="${!isAuthenticated}">
+<div th:if="${user == null}">
     <p>You are not logged in.</p>
     <button th:onclick="|window.location.href='/login'|">Login</button>
 </div>
