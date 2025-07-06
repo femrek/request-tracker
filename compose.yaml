@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres
+    container_name: request_tracer_db
+    hostname: request_tracer_db
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: request_tracer_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - request_tracer_db_data:/var/lib/postgresql/data
+
+volumes:
+  request_tracer_db_data:

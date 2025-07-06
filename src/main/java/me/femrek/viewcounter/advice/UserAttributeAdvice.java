@@ -1,5 +1,6 @@
 package me.femrek.viewcounter.advice;
 
+import me.femrek.viewcounter.controller.MainController;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -7,7 +8,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
-@ControllerAdvice
+@ControllerAdvice(assignableTypes = MainController.class)
 public class UserAttributeAdvice {
     @ModelAttribute("user")
     @Nullable

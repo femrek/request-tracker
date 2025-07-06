@@ -10,8 +10,17 @@ spring:
           GitHub:
             client-id: ${GITHUB_CLIENT_ID}
             client-secret: ${GITHUB_CLIENT_SECRET}
+            authorization-grant-type: authorization_code
             scope: read:user, user:email
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/request_tracer_db
+    username: postgres
+    password: ${POSTGRES_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
 
 server:
   port: 8181
