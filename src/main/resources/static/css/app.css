@@ -1,0 +1,36 @@
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.card-container {
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    padding: 2rem;
+    background-color: #fff;
+}
+
+.user-avatar {
+    border-radius: 50%;
+    border: 3px solid #0d6efd;
+}
+
+.btn-rounded {
+    border-radius: 50px;
+    padding: 0.5rem 1.5rem;
+}
+
+.title-primary {
+    font-weight: 700;
+    font-size: 2.5rem;
+    color: #0d6efd;
+}
+
+.text-greeting {
+    font-size: 1.25rem;
+}
+
+.page-container {
+    margin-top: 4rem;
+}

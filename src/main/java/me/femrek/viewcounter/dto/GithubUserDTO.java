@@ -1,9 +1,15 @@
 package me.femrek.viewcounter.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import me.femrek.viewcounter.model.GithubUser;
 
 @Data
+@AllArgsConstructor
+@Getter
+@Builder
 public class GithubUserDTO {
     private String username;
     private String fullName;
