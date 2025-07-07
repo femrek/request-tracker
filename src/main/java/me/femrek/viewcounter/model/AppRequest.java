@@ -1,7 +1,10 @@
 package me.femrek.viewcounter.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
@@ -9,6 +12,9 @@ import java.sql.Timestamp;
 @Entity
 @Table(name = "request")
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class AppRequest {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
