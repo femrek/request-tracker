@@ -2,10 +2,13 @@ package me.femrek.viewcounter.controller;
 
 import lombok.extern.log4j.Log4j2;
 import me.femrek.viewcounter.dto.GithubUserDTO;
+import me.femrek.viewcounter.dto.SubscriptionDTO;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/debug")
@@ -26,9 +29,27 @@ public class DebugController {
     @GetMapping("/logged_out")
     public String notLoggedIn(Model model) {
         log.info("Debug endpoint accessed without user, returning empty user data");
-        GithubUserDTO user = (GithubUserDTO) null;
+        GithubUserDTO user = null;
         //noinspection ConstantValue
         model.addAttribute("user", user);
+        return "index";
+    }
+
+    @GetMapping("/subscriptions")
+    public String subscriptions(Model model) {
+        log.info("Debug endpoint accessed for subscriptions");
+        SubscriptionDTO subscriptionDTO = SubscriptionDTO.builder()
+                .id("123e4567-e89b-12d3-a456-426614174000")
+                .name("Test Subscription")
+                .count(42L)
+                .build();
+        model.addAttribute("subscriptions", List.of(subscriptionDTO));
+        model.addAttribute("user", GithubUserDTO.builder()
+                .username("femrek")
+                .fullName("Faruk Emre")
+                .avatarUrl("https://avatars.githubusercontent.com/u/29581978?v=4")
+                .profileUrl("https://github.com/femrek")
+                .build());
         return "index";
     }
 }

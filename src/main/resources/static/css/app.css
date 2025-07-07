@@ -34,3 +34,27 @@ body {
 .page-container {
     margin-top: 4rem;
 }
+
+.editable-name {
+    display: inline-block;
+    padding: 4px 8px;
+    border: 1px dashed transparent;
+    border-radius: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+
+.editable-name[contenteditable="true"] {
+    border-color: #0d6efd;
+    background-color: #f0f8ff;
+    text-overflow: initial;
+    overflow: auto;
+}
+
+.edit-icon,
+.save-button {
+    font-size: 0.875rem;
+    padding: 0.25rem 0.5rem;
+}

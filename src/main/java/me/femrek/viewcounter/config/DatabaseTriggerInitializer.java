@@ -22,7 +22,10 @@ public class DatabaseTriggerInitializer {
                 CREATE OR REPLACE FUNCTION increment_counter()
                 RETURNS trigger AS $$
                 BEGIN
-                  UPDATE subscription SET counter = counter + 1 WHERE id = NEW.subscription;
+                  UPDATE subscription
+                  SET counter = counter + 1,
+                      last_request_at = NOW()
+                  WHERE id = NEW.subscription;
                   RETURN NEW;
                 END;
                 $$ LANGUAGE plpgsql;

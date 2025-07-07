@@ -1,7 +1,7 @@
 package me.femrek.viewcounter.security;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import me.femrek.viewcounter.dto.GithubUserDTO;
 import me.femrek.viewcounter.model.GithubUser;
 import me.femrek.viewcounter.repository.GithubUserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,13 +16,10 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 @Log4j2
 public class CustomOAuthUserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
     private final GithubUserRepository userRepository;
-
-    public CustomOAuthUserService(GithubUserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -55,12 +52,10 @@ public class CustomOAuthUserService implements OAuth2UserService<OAuth2UserReque
         githubUser.setProfileUrl(profileUrl);
         userRepository.save(githubUser);
 
-        GithubUserDTO userDTO = new GithubUserDTO(githubUser);
-
-        return new CustomOAuth2User(
-                userDTO,
-                List.of(new SimpleGrantedAuthority("ROLE_USER")),
-                attributes
-        );
+        return CustomOAuth2User.builder()
+                .githubUser(githubUser)
+                .authorities(List.of(new SimpleGrantedAuthority("ROLE_USER")))
+                .attributes(attributes)
+                .build();
     }
 }

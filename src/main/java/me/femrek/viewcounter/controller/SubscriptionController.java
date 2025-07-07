@@ -1,28 +1,31 @@
 package me.femrek.viewcounter.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import me.femrek.viewcounter.dto.RequestDTO;
-import me.femrek.viewcounter.dto.ResponseSubscriptionMinimal;
+import me.femrek.viewcounter.dto.UpdateSubscription;
+import me.femrek.viewcounter.security.CustomOAuth2User;
 import me.femrek.viewcounter.service.SubscriptionService;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
-@RequiredArgsConstructor
-@RestController
+@Controller
 @RequestMapping("/subscriptions")
+@RequiredArgsConstructor
 public class SubscriptionController {
-    private final SubscriptionService service;
+    private final SubscriptionService subscriptionService;
 
-    @GetMapping("/request/{uuid}")
-    public ResponseEntity<ResponseSubscriptionMinimal> performRequest(@PathVariable(name = "uuid") UUID uuid,
-                                                                      HttpServletRequest request) {
-        RequestDTO requestDTO = RequestDTO.builder()
-                .userAgent(request.getHeader("User-Agent"))
-                .ipAddress(request.getRemoteAddr())
-                .build();
-        return ResponseEntity.ok(service.performRequest(uuid, requestDTO));
+    @PostMapping
+    public String createSubscription(@AuthenticationPrincipal CustomOAuth2User user) {
+        subscriptionService.createSubscription(user);
+        return "redirect:/";
+    }
+
+    @PostMapping("/{uuid}")
+    public String updateSubscription(@PathVariable(name = "uuid") UUID uuid,
+                                     @ModelAttribute UpdateSubscription updateSubscription) {
+        subscriptionService.updateSubscription(uuid, updateSubscription);
+        return "redirect:/";
     }
 }

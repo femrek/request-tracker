@@ -4,13 +4,14 @@
         <div class="container d-flex justify-content-between align-items-center">
             <!-- App Title -->
             <a class="text-white fw-bold fs-3 text-decoration-none" href="/" style="letter-spacing: 1px;">
-                📈 Request Tracker
+                Request Tracker
             </a>
 
             <!-- Auth Section -->
             <div class="d-flex align-items-center gap-3">
                 <!-- Logged Out -->
-                <a th:if="${user == null}" class="btn btn-light btn-rounded fw-semibold px-4" href="/login">
+                <a th:if="${user == null}" class="btn btn-light btn-rounded fw-semibold px-4"
+                   href="/oauth2/authorization/GitHub">
                     Login with GitHub
                 </a>
 
