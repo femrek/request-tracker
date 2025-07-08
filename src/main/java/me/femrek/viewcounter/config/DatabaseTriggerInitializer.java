@@ -16,7 +16,7 @@ public class DatabaseTriggerInitializer {
 
     @PostConstruct
     public void createTriggerFunction() {
-        log.info("Creating trigger function and trigger for incrementing counter on table_a");
+        log.info("Creating trigger function and trigger for incrementing counter on subscription when request insert");
 
         String createFunction = """
                 CREATE OR REPLACE FUNCTION increment_counter()
