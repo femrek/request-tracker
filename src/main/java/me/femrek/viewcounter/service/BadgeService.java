@@ -64,12 +64,14 @@ public class BadgeService {
             shieldUrl = shieldUrl.substring(0, shieldUrl.length() - 1);
         }
 
-        URI uri = URI.create(shieldUrl + queue);
+        URI uri = UriComponentsBuilder
+                .fromUriString(shieldUrl)
+                .path(queue)
+                .queryParams(MultiValueMap.fromSingleValue(query))
+                .build(false)
+                .toUri();
         String response = restClient.get()
-                .uri(UriComponentsBuilder
-                        .fromUri(uri)
-                        .queryParams(MultiValueMap.fromSingleValue(query))
-                        .build().toUri())
+                .uri(uri)
                 .retrieve()
                 .body(String.class);
         log.trace("Generated badge with label: {}, message: {}, color: {}, query: {} | response: {}",
