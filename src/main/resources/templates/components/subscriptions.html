@@ -45,13 +45,18 @@
                         </p>
                     </div>
 
-                    <a th:href="${subscription.getUrl()}" target="_blank"
-                       class="btn btn-outline-primary btn-sm btn-rounded mt-2 mt-md-0">
-                        Visit Resource
-                    </a>
+                    <button type="button"
+                            class="btn btn-outline-primary btn-sm btn-rounded mt-2 mt-md-0 copy-btn"
+                            th:attr="data-url=${subscription.getSvgEndpoint()}">
+                        📋 Copy Badge URL
+                    </button>
+                    <button type="button"
+                            class="btn btn-outline-primary btn-sm btn-rounded mt-2 mt-md-0 copy-btn"
+                            th:attr="data-url=${subscription.getRestEndpoint()}">
+                        📋 Copy Rest URL
+                    </button>
                 </form>
             </div>
-
 
             <!-- New Subscription Row -->
             <div class="col-12">
@@ -74,6 +79,23 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.copy-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const path = button.getAttribute('data-url');
+                    const fullUrl = window.location.origin + path;
+
+                    navigator.clipboard.writeText(fullUrl).then(() => {
+                        button.textContent = "✅ Copied!";
+                        setTimeout(() => {
+                            button.textContent = "📋 Copy URL";
+                        }, 1500);
+                    }).catch(err => {
+                        console.error('Failed to copy URL: ', err);
+                        alert("Failed to copy URL.");
+                    });
+                });
+            });
+
             document.querySelectorAll('.editable-name').forEach(span => {
                 span.addEventListener('keydown', (event) => {
                     // handle enter press

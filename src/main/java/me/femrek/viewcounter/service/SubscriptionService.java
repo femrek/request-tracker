@@ -5,7 +5,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import me.femrek.viewcounter.dto.RequestDTO;
-import me.femrek.viewcounter.dto.ResponseSubscriptionMinimal;
 import me.femrek.viewcounter.dto.SubscriptionDTO;
 import me.femrek.viewcounter.dto.UpdateSubscription;
 import me.femrek.viewcounter.error.AppSubscriptionNotFound;
@@ -17,6 +16,7 @@ import me.femrek.viewcounter.repository.SubscriptionRepository;
 import me.femrek.viewcounter.security.CustomOAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -26,9 +26,22 @@ public class SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
     private final RequestRepository requestRepository;
     private final EntityManager entityManager;
+    private final BadgeService badgeService;
 
     @Transactional
-    public ResponseSubscriptionMinimal performRequest(UUID subscriptionId, RequestDTO requestDTO) {
+    public SubscriptionDTO performRequest(UUID subscriptionId, RequestDTO requestDTO) {
+        return new SubscriptionDTO(_performRequest(subscriptionId, requestDTO));
+    }
+
+    @Transactional
+    public String performRequestWithBadge(UUID subscriptionId,
+                                          RequestDTO requestDTO,
+                                          Map<String, String> queryParams) {
+        AppSubscription subscription = _performRequest(subscriptionId, requestDTO);
+        return badgeService.getViewsBadge(subscription, queryParams);
+    }
+
+    private AppSubscription _performRequest(UUID subscriptionId, RequestDTO requestDTO) {
         log.trace("Performing request for subscription: {}", requestDTO);
         if (subscriptionId == null) {
             throw new IllegalArgumentException("Subscription ID cannot be null.");
@@ -49,12 +62,17 @@ public class SubscriptionService {
         log.trace("count {}. Request performed for subscription: {}",
                 subscription.getCounter(), subscriptionId);
 
-        return ResponseSubscriptionMinimal.builder()
-                .count(subscription.getCounter())
-                .build();
+        return subscription;
     }
 
-    public SubscriptionDTO createSubscription(CustomOAuth2User user) {
+    public SubscriptionDTO getSubscription(UUID uuid) {
+        log.trace("Fetching subscription with ID: {}", uuid);
+        AppSubscription subscription = subscriptionRepository.findById(uuid)
+                .orElseThrow(() -> new AppSubscriptionNotFound("Subscription with ID " + uuid + " not found."));
+        return new SubscriptionDTO(subscription);
+    }
+
+    public void createSubscription(CustomOAuth2User user) {
         log.trace("Creating a new subscription");
 
         if (user == null) {
@@ -74,10 +92,10 @@ public class SubscriptionService {
 
         log.debug("Created new subscription with ID: {}", savedSubscription.getId());
 
-        return new SubscriptionDTO(savedSubscription);
+        new SubscriptionDTO(savedSubscription);
     }
 
-    public SubscriptionDTO updateSubscription(UUID uuid, UpdateSubscription updateSubscription) {
+    public void updateSubscription(UUID uuid, UpdateSubscription updateSubscription) {
         log.trace("Updating subscription with ID: {}", uuid);
 
         AppSubscription subscription = subscriptionRepository.findById(uuid)
@@ -91,7 +109,7 @@ public class SubscriptionService {
         AppSubscription updatedSubscription = subscriptionRepository.save(subscription);
 
         log.debug("Updated subscription with ID: {}", updatedSubscription.getId());
-        return new SubscriptionDTO(updatedSubscription);
+        new SubscriptionDTO(updatedSubscription);
     }
 
     public void mountSubscriptions(GithubUser user) {

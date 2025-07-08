@@ -28,3 +28,5 @@ server:
 logging:
   level:
     me.femrek.viewcounter: trace
+
+shieldUrl: http://localhost:8380

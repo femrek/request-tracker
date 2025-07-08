@@ -13,5 +13,12 @@ services:
     volumes:
       - request_tracer_db_data:/var/lib/postgresql/data
 
+  shield:
+    image: shieldsio/shields:server-2025-07-01
+    container_name: request_tracer_shield
+    hostname: shield
+    ports:
+      - "8380:80"
+
 volumes:
   request_tracer_db_data:

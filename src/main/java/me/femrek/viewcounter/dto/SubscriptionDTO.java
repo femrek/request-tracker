@@ -15,14 +15,16 @@ public class SubscriptionDTO {
     private String id;
     private String name;
     private Long count;
-    private String url;
+    private String restEndpoint;
+    private String svgEndpoint;
     private Timestamp createdAt;
 
     public SubscriptionDTO(AppSubscription subscription) {
         this.id = subscription.getId().toString();
         this.name = subscription.getName();
         this.count = subscription.getCounter();
-        this.url = "/api/subscriptions/request/" + subscription.getId();
+        this.restEndpoint = "/api/subscriptions/request/" + subscription.getId();
+        this.svgEndpoint = "/api/subscriptions/request/badge/" + subscription.getId();
         this.createdAt = subscription.getCreatedAt();
     }
 

@@ -21,6 +21,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/login", "/css/**", "/js/**").permitAll()
                         .requestMatchers("/api/subscriptions/request/**").permitAll()
+                        .requestMatchers("/api/subscriptions/no-request/**").permitAll()
                         .requestMatchers(new LocalhostAndPathMatcher("/debug")).permitAll()
                         .anyRequest().authenticated()
                 )
