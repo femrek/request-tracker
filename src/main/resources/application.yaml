@@ -1,6 +1,6 @@
 spring:
   config:
-    import: optional:file:.env[.properties]
+    import: optional:file:.properties[.properties]
   application:
     name: view-counter
   security:
@@ -14,7 +14,7 @@ spring:
             scope: read:user, user:email
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
   datasource:
-    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/request_tracer_db
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/${POSTGRES_DB:request_tracer_db}
     username: postgres
     password: ${POSTGRES_PASSWORD}
 
@@ -23,10 +23,10 @@ spring:
       ddl-auto: update
 
 server:
-  port: 8181
+  port: ${SERVER_PORT:8181}
 
 logging:
   level:
     me.femrek.viewcounter: trace
 
-shieldUrl: http://localhost:8380
+shieldUrl: ${SHIELD_URL:http://localhost:8380}
