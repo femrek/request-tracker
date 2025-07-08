@@ -12,7 +12,7 @@ spring:
             client-secret: ${GITHUB_CLIENT_SECRET}
             authorization-grant-type: authorization_code
             scope: read:user, user:email
-            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            redirect-uri: ${BASE_URL:{baseUrl}}/login/oauth2/code/{registrationId}
   datasource:
     url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/${POSTGRES_DB:request_tracer_db}
     username: postgres

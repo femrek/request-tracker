@@ -1,0 +1,16 @@
+FROM maven AS builder
+
+WORKDIR /app
+COPY pom.xml .
+COPY src src
+RUN mvn clean package -DskipTests
+
+FROM eclipse-temurin:23-jre
+LABEL authors="femrek"
+
+WORKDIR /app
+COPY --from=builder /app/target/*.jar app.jar
+COPY docker-entrypoint.sh .
+
+ENTRYPOINT ["sh", "docker-entrypoint.sh"]
+
