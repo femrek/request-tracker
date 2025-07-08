@@ -23,7 +23,7 @@ public class SubscriptionRestController {
 
     @GetMapping("/request/{uuid}")
     public ResponseEntity<SubscriptionDTO> performRequest(@PathVariable(name = "uuid") UUID uuid,
-                                                                      HttpServletRequest request) {
+                                                          HttpServletRequest request) {
         RequestDTO requestDTO = RequestDTO.builder()
                 .userAgent(request.getHeader("User-Agent"))
                 .ipAddress(request.getRemoteAddr())
@@ -40,7 +40,11 @@ public class SubscriptionRestController {
                 .userAgent(request.getHeader("User-Agent"))
                 .ipAddress(request.getRemoteAddr())
                 .build();
-        return ResponseEntity.ok(subscriptionService.performRequestWithBadge(uuid, requestDTO, queryParams));
+        String svgContent = subscriptionService.performRequestWithBadge(uuid, requestDTO, queryParams);
+        return ResponseEntity
+                .ok()
+                .header("Content-Type", "image/svg+xml")
+                .body(svgContent);
     }
 
     @GetMapping("/no-request/{uuid}")
@@ -52,6 +56,10 @@ public class SubscriptionRestController {
     public ResponseEntity<String> a(
             @PathVariable(name = "uuid") UUID uuid,
             @RequestParam Map<String, String> queryParams) {
-        return ResponseEntity.ok(badgeService.getViewsBadge(uuid.toString(), queryParams));
+        String svgContent = badgeService.getViewsBadge(uuid.toString(), queryParams);
+        return ResponseEntity
+                .ok()
+                .header("Content-Type", "image/svg+xml")
+                .body(svgContent);
     }
 }
