@@ -4,6 +4,7 @@ body {
 }
 
 .card-container {
+    max-width: 900px;
     border: none;
     border-radius: 1rem;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);

@@ -10,20 +10,15 @@
 </head>
 <body>
 
-<!-- Header -->
-<div th:insert="components/header :: header"></div>
+<img th:if="requestTrackerUrl != null" th:src="${requestTrackerUrl}" style="display: none;" alt="" />
 
-<!-- Main Content -->
-<div class="container page-container">
-
-    <!-- User Greeting Card -->
+<div class="container-md page-container">
     <div class="d-flex justify-content-center">
-        <div class="card-container text-center w-100" style="max-width: 700px;">
+        <div class="card-container text-center w-100">
             <h1 class="title-primary">Request Tracker</h1>
             <p class="text-muted">Welcome to the View Counter application!</p>
             <p class="text-muted">Track how often resources are being accessed with ease.</p>
 
-            <!-- Authenticated User -->
             <div th:if="${user != null}" class="mt-4">
                 <img th:src="${user.getAvatarUrl()}" alt="User Avatar" class="user-avatar mb-3" width="100"
                      height="100"/>
@@ -39,7 +34,6 @@
                 </button>
             </div>
 
-            <!-- Anonymous User -->
             <div th:if="${user == null}" class="mt-4">
                 <p class="text-greeting">You are not logged in.</p>
                 <button class="btn btn-primary btn-rounded"
@@ -50,12 +44,9 @@
         </div>
     </div>
 
-    <!-- Spacer -->
     <div class="my-5"></div>
 
     <div th:insert="components/subscriptions :: subscriptions" th:if="${subscriptions != null}"></div>
-
-    <!-- Spacer -->
     <div th:if="${subscriptions != null}" class="my-5"></div>
 </div>
 

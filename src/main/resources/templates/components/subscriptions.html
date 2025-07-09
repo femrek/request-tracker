@@ -1,10 +1,9 @@
 <!--/*@thymesVar id="subscriptions" type="java.util.List<me.femrek.viewcounter.dto.SubscriptionDTO>"*/-->
 <div th:fragment="subscriptions" class="d-flex justify-content-center mt-5">
-    <div class="card-container w-100" style="max-width: 900px;">
+    <div class="card-container w-100">
         <h2 class="title-primary mb-4 text-center">Subscriptions</h2>
 
         <div class="row g-3">
-            <!-- Existing Subscriptions -->
             <div th:if="${subscriptions.isEmpty()}">
 
             </div>
@@ -17,7 +16,6 @@
 
                     <div class="w-100">
                         <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
-                            <!-- Editable Name Field + Edit Icon -->
                             <h5 class="card-title mb-1 d-flex align-items-center gap-2">
                                 <!--suppress HtmlFormInputWithoutLabel -->
                                 <input th:id="'name-' + ${subscription.getId()}"
@@ -58,7 +56,6 @@
                 </form>
             </div>
 
-            <!-- New Subscription Row -->
             <div class="col-12">
                 <div class="card-body text-center">
                     <form th:action="@{/subscriptions}" method="post">
@@ -83,11 +80,12 @@
                 button.addEventListener('click', () => {
                     const path = button.getAttribute('data-url');
                     const fullUrl = window.location.origin + path;
+                    const innerText = button.innerText;
 
                     navigator.clipboard.writeText(fullUrl).then(() => {
                         button.textContent = "✅ Copied!";
                         setTimeout(() => {
-                            button.textContent = "📋 Copy URL";
+                            button.textContent = innerText;
                         }, 1500);
                     }).catch(err => {
                         console.error('Failed to copy URL: ', err);

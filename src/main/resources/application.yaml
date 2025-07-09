@@ -1,6 +1,6 @@
 spring:
   config:
-    import: optional:file:.properties[.properties]
+    import: optional:file:.env.properties[.properties]
   application:
     name: view-counter
   security:
@@ -30,3 +30,5 @@ logging:
     me.femrek.viewcounter: trace
 
 shieldUrl: ${SHIELD_URL:http://localhost:8380}
+
+requestTrackerUrl: ${REQUEST_TRACKER_URL}

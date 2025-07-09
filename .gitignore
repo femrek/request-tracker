@@ -33,5 +33,5 @@ build/
 .vscode/
 
 .env
-.properties
+.env.properties
 deployment-compose.yaml
