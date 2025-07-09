@@ -3,7 +3,7 @@
 Create badges for present view count of your webpages.
 
 [![views](https://request-tracker.femrek.me/api/subscriptions/request/badge/36aadabd-2fab-49fc-bc63-59a4ff5ec354?label=View%20Count)](https://github.com/femrek/request-tracker)
-![Live Site](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Frequest-tracker.femrek.me%2Factuator%2Fhealth&query=%24.status&label=Live%20Site&color=DarkGreen)
+[![Live Site](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Frequest-tracker.femrek.me%2Factuator%2Fhealth&query=%24.status&label=Live%20Site&color=DarkGreen)](https://request-tracker.femrek.me/)
 
 ![req-tra-demo-low-res](https://github.com/user-attachments/assets/22f71ba5-ccdc-4486-9da7-3f50c72f1813)
 
