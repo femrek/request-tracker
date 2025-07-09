@@ -26,7 +26,7 @@ public class SubscriptionRestController {
                                                           HttpServletRequest request) {
         RequestDTO requestDTO = RequestDTO.builder()
                 .userAgent(request.getHeader("User-Agent"))
-                .ipAddress(request.getRemoteAddr())
+                .ipAddress(subscriptionService.getClientIp(request))
                 .build();
         return ResponseEntity.ok(subscriptionService.performRequest(uuid, requestDTO));
     }
@@ -38,7 +38,7 @@ public class SubscriptionRestController {
             HttpServletRequest request) {
         RequestDTO requestDTO = RequestDTO.builder()
                 .userAgent(request.getHeader("User-Agent"))
-                .ipAddress(request.getRemoteAddr())
+                .ipAddress(subscriptionService.getClientIp(request))
                 .build();
         String svgContent = subscriptionService.performRequestWithBadge(uuid, requestDTO, queryParams);
         return ResponseEntity
@@ -48,12 +48,12 @@ public class SubscriptionRestController {
     }
 
     @GetMapping("/no-request/{uuid}")
-    public ResponseEntity<SubscriptionDTO> a(@PathVariable(name = "uuid") UUID uuid) {
+    public ResponseEntity<SubscriptionDTO> noRequest(@PathVariable(name = "uuid") UUID uuid) {
         return ResponseEntity.ok(subscriptionService.getSubscription(uuid));
     }
 
     @GetMapping("/no-request/badge/{uuid}")
-    public ResponseEntity<String> a(
+    public ResponseEntity<String> noRequestWithBadge(
             @PathVariable(name = "uuid") UUID uuid,
             @RequestParam Map<String, String> queryParams) {
         String svgContent = badgeService.getViewsBadge(uuid.toString(), queryParams);
