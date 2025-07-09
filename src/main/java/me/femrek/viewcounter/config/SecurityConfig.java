@@ -20,6 +20,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/login", "/css/**", "/js/**").permitAll()
+                        .requestMatchers("/actuator/health").permitAll()
                         .requestMatchers("/api/subscriptions/request/**").permitAll()
                         .requestMatchers("/api/subscriptions/no-request/**").permitAll()
                         .requestMatchers(new LocalhostAndPathMatcher("/debug")).permitAll()
