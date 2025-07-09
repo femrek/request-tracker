@@ -44,12 +44,8 @@ services:
       context: .
     ports:
       - "8181:${SPRING_PORT:-8181}"
-    environment:
-      - GITHUB_CLIENT_ID=${GITHUB_CLIENT_ID}
-      - GITHUB_CLIENT_SECRET=${GITHUB_CLIENT_SECRET}
-      - POSTGRES_HOST=${POSTGRES_HOST:-db}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - SPRING_PORT=${SPRING_PORT}
+    env_file:
+      - .env
     networks:
       - view_counter_network
     healthcheck:
