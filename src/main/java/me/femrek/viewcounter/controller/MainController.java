@@ -25,7 +25,7 @@ public class MainController {
     public String index(@AuthenticationPrincipal CustomOAuth2User user, Model model) {
         if (user != null && user.getGithubUser() != null) {
             model.addAttribute("user", new GithubUserDTO(user.getGithubUser()));
-            subscriptionService.mountSubscriptions(user.getGithubUser());
+            subscriptionService.mountSubscriptionsOnlyExist(user.getGithubUser());
             model.addAttribute("subscriptions",
                     SubscriptionDTO.from(user.getGithubUser().getSubscriptions()));
         }

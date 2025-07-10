@@ -48,4 +48,7 @@ public class AppSubscription {
 
     @Column(name = "last_request_at")
     private Timestamp lastRequestAt;
+
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted;
 }

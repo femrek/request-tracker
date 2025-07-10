@@ -6,9 +6,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
 public interface SubscriptionRepository extends JpaRepository<AppSubscription, UUID> {
-    List<AppSubscription> findAllByCreatedBy(GithubUser createdBy);
+    List<AppSubscription> findAllByCreatedByAndIsDeletedFalse(GithubUser createdBy);
+    List<AppSubscription> findAllByCreatedByAndIsDeletedTrue(GithubUser createdBy);
+
+    Optional<AppSubscription> findByIdAndIsDeletedFalse(UUID id);
+    Optional<AppSubscription> findByIdAndIsDeletedTrue(UUID id);
 }

@@ -15,8 +15,10 @@ import me.femrek.viewcounter.model.GithubUser;
 import me.femrek.viewcounter.repository.RequestRepository;
 import me.femrek.viewcounter.repository.SubscriptionRepository;
 import me.femrek.viewcounter.security.CustomOAuth2User;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -48,7 +50,7 @@ public class SubscriptionService {
             throw new IllegalArgumentException("Subscription ID cannot be null.");
         }
 
-        AppSubscription subscription = subscriptionRepository.findById(subscriptionId)
+        AppSubscription subscription = subscriptionRepository.findByIdAndIsDeletedFalse(subscriptionId)
                 .orElseThrow(() -> new AppSubscriptionNotFound(
                         "Subscription with ID " + subscriptionId + " not found."));
 
@@ -73,6 +75,7 @@ public class SubscriptionService {
         return new SubscriptionDTO(subscription);
     }
 
+    @Transactional
     public void createSubscription(CustomOAuth2User user) {
         log.trace("Creating a new subscription");
 
@@ -88,14 +91,14 @@ public class SubscriptionService {
                 .name("-")
                 .counter(0L)
                 .createdBy(githubUser)
+                .isDeleted(false)
                 .build();
         AppSubscription savedSubscription = subscriptionRepository.save(newSubscription);
 
         log.debug("Created new subscription with ID: {}", savedSubscription.getId());
-
-        new SubscriptionDTO(savedSubscription);
     }
 
+    @Transactional
     public void updateSubscription(UUID uuid, UpdateSubscription updateSubscription) {
         log.trace("Updating subscription with ID: {}", uuid);
 
@@ -110,15 +113,22 @@ public class SubscriptionService {
         AppSubscription updatedSubscription = subscriptionRepository.save(subscription);
 
         log.debug("Updated subscription with ID: {}", updatedSubscription.getId());
-        new SubscriptionDTO(updatedSubscription);
     }
 
-    public void mountSubscriptions(GithubUser user) {
+    public void mountSubscriptionsOnlyExist(GithubUser user) {
         if (user == null) {
             throw new IllegalArgumentException("User must be authenticated to mount subscriptions.");
         }
         log.trace("Mounting subscriptions for user: {}", user.getUsername());
-        user.setSubscriptions(subscriptionRepository.findAllByCreatedBy(user));
+        user.setSubscriptions(subscriptionRepository.findAllByCreatedByAndIsDeletedFalse(user));
+    }
+
+    public List<SubscriptionDTO> getSubscriptionsOnlyDeleted(GithubUser user) {
+        if (user == null) {
+            throw new IllegalArgumentException("User must be authenticated to get deleted subscriptions.");
+        }
+        log.trace("Fetching deleted subscriptions for user: {}", user.getUsername());
+        return SubscriptionDTO.from(subscriptionRepository.findAllByCreatedByAndIsDeletedTrue(user));
     }
 
     public String getClientIp(HttpServletRequest request) {
@@ -131,5 +141,51 @@ public class SubscriptionService {
             return ip;
         }
         return request.getRemoteAddr();
+    }
+
+    @Transactional
+    public void deleteSubscription(GithubUser user, UUID uuid) {
+        log.trace("Deleting subscription with ID: {}", uuid);
+        subscriptionRepository.findByIdAndIsDeletedTrue(uuid).ifPresent(
+                subscription -> {
+                    log.debug("Subscription with ID {} is already deleted.", uuid);
+                    throw new AppSubscriptionNotFound("Subscription with ID " + uuid + " is already deleted.");
+                });
+        AppSubscription subscription = subscriptionRepository.findByIdAndIsDeletedFalse(uuid)
+                .orElseThrow(() -> new AppSubscriptionNotFound("Subscription with ID " + uuid + " not found."));
+
+        if (subscription.getCreatedBy() == null ||
+                !subscription.getCreatedBy().getId().equals(user.getId())) {
+            log.warn("User {} is not authorized to delete subscription with ID: {}", user.getUsername(), uuid);
+            throw new AuthorizationDeniedException("You are not authorized to delete this subscription.");
+        }
+
+        subscription.setIsDeleted(true);
+        subscriptionRepository.save(subscription);
+
+        log.debug("Deleted subscription with ID: {}", uuid);
+    }
+
+    @Transactional
+    public void restoreById(GithubUser user, UUID id) {
+        log.trace("Restoring subscription with ID: {}", id);
+        subscriptionRepository.findByIdAndIsDeletedFalse(id).ifPresent(
+                subscription -> {
+                    log.debug("Subscription with ID {} is not deleted.", id);
+                    throw new AppSubscriptionNotFound("Subscription with ID " + id + " is not deleted.");
+                });
+        AppSubscription subscription = subscriptionRepository.findByIdAndIsDeletedTrue(id)
+                .orElseThrow(() -> new AppSubscriptionNotFound("Subscription with ID " + id + " not found."));
+
+        if (subscription.getCreatedBy() == null ||
+                !subscription.getCreatedBy().getId().equals(user.getId())) {
+            log.warn("User {} is not authorized to restore subscription with ID: {}", user.getUsername(), id);
+            throw new AuthorizationDeniedException("You are not authorized to restore this subscription.");
+        }
+
+        subscription.setIsDeleted(false);
+        subscriptionRepository.save(subscription);
+
+        log.debug("Restored subscription with ID: {}", id);
     }
 }

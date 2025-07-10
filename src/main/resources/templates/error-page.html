@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+</head>
+<body>
+<!--/*@thymesVar id="errorMessage" type="java.lang.String"*/-->
+
+<div th:if="${#strings.isEmpty(errorMessage)}" class="alert alert-danger">
+    <h2>Error</h2>
+</div>
+
+<div th:unless="${#strings.isEmpty(errorMessage)}" class="alert alert-danger">
+    <p th:text="${errorMessage}">An error occurred. Please try again later.</p>
+</div>
+
+</body>
+</html>
