@@ -25,7 +25,7 @@ public class GithubUser {
     @Column(name = "gh_avatar_url")
     private String avatarUrl;
 
-    @OneToMany(targetEntity = AppSubscription.class)
+    @OneToMany(targetEntity = AppSubscription.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by")
     private List<AppSubscription> subscriptions;
 }

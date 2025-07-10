@@ -5,7 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import me.femrek.viewcounter.dto.RequestDTO;
+import me.femrek.viewcounter.dto.RequestRequest;
 import me.femrek.viewcounter.dto.SubscriptionDTO;
 import me.femrek.viewcounter.dto.UpdateSubscription;
 import me.femrek.viewcounter.error.AppSubscriptionNotFound;
@@ -32,20 +32,20 @@ public class SubscriptionService {
     private final BadgeService badgeService;
 
     @Transactional
-    public SubscriptionDTO performRequest(UUID subscriptionId, RequestDTO requestDTO) {
-        return new SubscriptionDTO(_performRequest(subscriptionId, requestDTO));
+    public SubscriptionDTO performRequest(UUID subscriptionId, RequestRequest requestRequest) {
+        return new SubscriptionDTO(_performRequest(subscriptionId, requestRequest));
     }
 
     @Transactional
     public String performRequestWithBadge(UUID subscriptionId,
-                                          RequestDTO requestDTO,
+                                          RequestRequest requestRequest,
                                           Map<String, String> queryParams) {
-        AppSubscription subscription = _performRequest(subscriptionId, requestDTO);
+        AppSubscription subscription = _performRequest(subscriptionId, requestRequest);
         return badgeService.getViewsBadge(subscription, queryParams);
     }
 
-    private AppSubscription _performRequest(UUID subscriptionId, RequestDTO requestDTO) {
-        log.trace("Performing request for subscription: {}", requestDTO);
+    private AppSubscription _performRequest(UUID subscriptionId, RequestRequest requestRequest) {
+        log.trace("Performing request for subscription: {}", requestRequest);
         if (subscriptionId == null) {
             throw new IllegalArgumentException("Subscription ID cannot be null.");
         }
@@ -56,8 +56,8 @@ public class SubscriptionService {
 
         AppRequest request = AppRequest.builder()
                 .subscription(subscription)
-                .userAgent(requestDTO.getUserAgent())
-                .ipAddress(requestDTO.getIpAddress())
+                .userAgent(requestRequest.getUserAgent())
+                .ipAddress(requestRequest.getIpAddress())
                 .build();
         requestRepository.saveAndFlush(request);
         entityManager.refresh(subscription);
@@ -115,12 +115,19 @@ public class SubscriptionService {
         log.debug("Updated subscription with ID: {}", updatedSubscription.getId());
     }
 
-    public void mountSubscriptionsOnlyExist(GithubUser user) {
+    public void mountSubscriptionsOnlyExist(GithubUser user, boolean limitRequests) {
         if (user == null) {
             throw new IllegalArgumentException("User must be authenticated to mount subscriptions.");
         }
         log.trace("Mounting subscriptions for user: {}", user.getUsername());
-        user.setSubscriptions(subscriptionRepository.findAllByCreatedByAndIsDeletedFalse(user));
+
+        List<AppSubscription> subscriptions = subscriptionRepository
+                .findAllByCreatedByAndIsDeletedFalseOrderByCreatedAtAsc(user);
+        subscriptions.forEach(subscription -> {
+            if (limitRequests) subscription.setRequests(requestRepository
+                    .findTop10BySubscription_IdOrderByTimestampDesc(subscription.getId()));
+        });
+        user.setSubscriptions(subscriptions);
     }
 
     public List<SubscriptionDTO> getSubscriptionsOnlyDeleted(GithubUser user) {
@@ -128,7 +135,8 @@ public class SubscriptionService {
             throw new IllegalArgumentException("User must be authenticated to get deleted subscriptions.");
         }
         log.trace("Fetching deleted subscriptions for user: {}", user.getUsername());
-        return SubscriptionDTO.from(subscriptionRepository.findAllByCreatedByAndIsDeletedTrue(user));
+        return SubscriptionDTO.from(subscriptionRepository
+                .findAllByCreatedByAndIsDeletedTrueOrderByCreatedAtAsc(user));
     }
 
     public String getClientIp(HttpServletRequest request) {

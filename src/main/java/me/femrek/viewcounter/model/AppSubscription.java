@@ -32,9 +32,10 @@ public class AppSubscription {
     private GithubUser createdBy;
 
     @Column(name = "counter", nullable = false)
+    @Builder.Default
     private Long counter = 0L;
 
-    @OneToMany(targetEntity = AppRequest.class)
+    @OneToMany(targetEntity = AppRequest.class, fetch = FetchType.LAZY)
     @JoinColumn(name = "subscription")
     private List<AppRequest> requests;
 

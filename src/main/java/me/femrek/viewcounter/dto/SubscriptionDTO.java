@@ -18,6 +18,7 @@ public class SubscriptionDTO {
     private String restEndpoint;
     private String svgEndpoint;
     private Timestamp createdAt;
+    private List<RequestDTO> requests;
 
     public SubscriptionDTO(AppSubscription subscription) {
         this.id = subscription.getId().toString();
@@ -26,6 +27,9 @@ public class SubscriptionDTO {
         this.restEndpoint = "/api/subscriptions/request/" + subscription.getId();
         this.svgEndpoint = "/api/subscriptions/request/badge/" + subscription.getId();
         this.createdAt = subscription.getCreatedAt();
+        this.requests = subscription.getRequests().stream()
+                .map(RequestDTO::new)
+                .toList();
     }
 
     public static List<SubscriptionDTO> from(List<AppSubscription> subscriptions) {

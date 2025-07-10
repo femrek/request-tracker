@@ -3,7 +3,7 @@ package me.femrek.viewcounter.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import me.femrek.viewcounter.dto.RequestDTO;
+import me.femrek.viewcounter.dto.RequestRequest;
 import me.femrek.viewcounter.dto.SubscriptionDTO;
 import me.femrek.viewcounter.service.BadgeService;
 import me.femrek.viewcounter.service.SubscriptionService;
@@ -24,11 +24,11 @@ public class SubscriptionRestController {
     @GetMapping("/request/{uuid}")
     public ResponseEntity<SubscriptionDTO> performRequest(@PathVariable(name = "uuid") UUID uuid,
                                                           HttpServletRequest request) {
-        RequestDTO requestDTO = RequestDTO.builder()
+        RequestRequest requestRequest = RequestRequest.builder()
                 .userAgent(request.getHeader("User-Agent"))
                 .ipAddress(subscriptionService.getClientIp(request))
                 .build();
-        return ResponseEntity.ok(subscriptionService.performRequest(uuid, requestDTO));
+        return ResponseEntity.ok(subscriptionService.performRequest(uuid, requestRequest));
     }
 
     @GetMapping("/request/badge/{uuid}")
@@ -36,11 +36,11 @@ public class SubscriptionRestController {
             @PathVariable(name = "uuid") UUID uuid,
             @RequestParam Map<String, String> queryParams,
             HttpServletRequest request) {
-        RequestDTO requestDTO = RequestDTO.builder()
+        RequestRequest requestRequest = RequestRequest.builder()
                 .userAgent(request.getHeader("User-Agent"))
                 .ipAddress(subscriptionService.getClientIp(request))
                 .build();
-        String svgContent = subscriptionService.performRequestWithBadge(uuid, requestDTO, queryParams);
+        String svgContent = subscriptionService.performRequestWithBadge(uuid, requestRequest, queryParams);
         return ResponseEntity
                 .ok()
                 .header("Content-Type", "image/svg+xml")

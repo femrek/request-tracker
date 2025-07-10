@@ -3,7 +3,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>View Counter</title>
+    <title>Request Tracker</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/app.css" rel="stylesheet">
@@ -49,6 +49,8 @@
     <div th:insert="components/subscriptions :: subscriptions" th:if="${subscriptions != null}"></div>
     <div th:if="${subscriptions != null}" class="my-5"></div>
 </div>
+
+<script src="/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

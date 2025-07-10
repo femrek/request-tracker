@@ -11,8 +11,8 @@ import java.util.UUID;
 
 @Repository
 public interface SubscriptionRepository extends JpaRepository<AppSubscription, UUID> {
-    List<AppSubscription> findAllByCreatedByAndIsDeletedFalse(GithubUser createdBy);
-    List<AppSubscription> findAllByCreatedByAndIsDeletedTrue(GithubUser createdBy);
+    List<AppSubscription> findAllByCreatedByAndIsDeletedFalseOrderByCreatedAtAsc(GithubUser createdBy);
+    List<AppSubscription> findAllByCreatedByAndIsDeletedTrueOrderByCreatedAtAsc(GithubUser createdBy);
 
     Optional<AppSubscription> findByIdAndIsDeletedFalse(UUID id);
     Optional<AppSubscription> findByIdAndIsDeletedTrue(UUID id);

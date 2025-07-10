@@ -21,7 +21,7 @@ public class SubscriptionController {
     public String deletedSubscriptions(@AuthenticationPrincipal CustomOAuth2User user, Model model) {
         if (user != null && user.getGithubUser() != null) {
             model.addAttribute("user", user.getGithubUser());
-            subscriptionService.mountSubscriptionsOnlyExist(user.getGithubUser());
+            subscriptionService.mountSubscriptionsOnlyExist(user.getGithubUser(), true);
             model.addAttribute("deletedSubscriptions",
                     subscriptionService.getSubscriptionsOnlyDeleted(user.getGithubUser()));
         }
