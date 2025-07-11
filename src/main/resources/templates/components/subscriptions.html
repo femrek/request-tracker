@@ -49,6 +49,9 @@
                         <p class="card-text text-muted mb-0">
                             Views: <span th:text="${subscription.getCount()}">0</span>
                         </p>
+                        <p th:if="${subscription.getLastRequestAt() != null}" class="card-text text-muted mb-0">
+                            Last Request: <span th:text="${subscription.lastRequestAtFormatted()}">0</span>
+                        </p>
                     </div>
 
                     <form th:action="@{/subscriptions/{id}/delete(id=${subscription.id})}" method="post"

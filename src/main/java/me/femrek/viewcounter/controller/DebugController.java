@@ -43,10 +43,17 @@ public class DebugController {
         log.info("Debug endpoint accessed for subscriptions");
 
         model.addAttribute("subscriptions", List.of(
-                _generateSubscription(),
-                _generateSubscription(),
-                _generateSubscription(),
-                _generateSubscription()
+                _generateSubscription(new Timestamp(1741713236000L)),
+                _generateSubscription(new Timestamp(System.currentTimeMillis() - 1000 * 60 * 60 * 24 * 3)),
+                _generateSubscription(new Timestamp(System.currentTimeMillis() - 1000 * 60 * 60 * 24)),
+                _generateSubscription(new Timestamp(System.currentTimeMillis() - 1000 * 60 * 60 * 12)),
+                _generateSubscription(new Timestamp(System.currentTimeMillis() - 1000 * 60 * 60 * 6)),
+                _generateSubscription(new Timestamp(System.currentTimeMillis() - 1000 * 60 * 60 * 2)),
+                _generateSubscription(new Timestamp(System.currentTimeMillis() - 1000 * 60 * 60)),
+                _generateSubscription(new Timestamp(System.currentTimeMillis() - 1000 * 60 * 30)),
+                _generateSubscription(new Timestamp(System.currentTimeMillis() - 1000 * 60 * 15)),
+                _generateSubscription(new Timestamp(System.currentTimeMillis() - 1000 * 60 * 5)),
+                _generateSubscription(new Timestamp(System.currentTimeMillis() - 1000 * 2))
         ));
         model.addAttribute("user", GithubUserDTO.builder()
                 .username("femrek")
@@ -57,7 +64,7 @@ public class DebugController {
         return "index";
     }
 
-    private SubscriptionDTO _generateSubscription() {
+    private SubscriptionDTO _generateSubscription(Timestamp lastRequestAt) {
         RequestDTO requestDTO = RequestDTO.builder()
                 .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/123 (KHTML, like Gecko) Chrome/58.123 Safari/123.3")
                 .ipAddress("123.123.123.123")
@@ -67,6 +74,7 @@ public class DebugController {
                 .id(UUID.randomUUID().toString())
                 .name("Test Subscription")
                 .count(42L)
+                .lastRequestAt(lastRequestAt)
                 .requests(List.of(requestDTO, requestDTO, requestDTO, requestDTO,
                         requestDTO, requestDTO, requestDTO, requestDTO, requestDTO))
                 .build();

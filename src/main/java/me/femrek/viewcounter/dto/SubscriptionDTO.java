@@ -18,6 +18,7 @@ public class SubscriptionDTO {
     private String restEndpoint;
     private String svgEndpoint;
     private Timestamp createdAt;
+    private Timestamp lastRequestAt;
     private List<RequestDTO> requests;
 
     public SubscriptionDTO(AppSubscription subscription) {
@@ -27,6 +28,7 @@ public class SubscriptionDTO {
         this.restEndpoint = "/api/subscriptions/request/" + subscription.getId();
         this.svgEndpoint = "/api/subscriptions/request/badge/" + subscription.getId();
         this.createdAt = subscription.getCreatedAt();
+        this.lastRequestAt = subscription.getLastRequestAt();
         this.requests = subscription.getRequests().stream()
                 .map(RequestDTO::new)
                 .toList();
@@ -36,5 +38,26 @@ public class SubscriptionDTO {
         return subscriptions.stream()
                 .map(SubscriptionDTO::new)
                 .toList();
+    }
+
+    public String lastRequestAtFormatted() {
+        if (lastRequestAt == null) {
+            return null;
+        }
+        final Timestamp now = new Timestamp(System.currentTimeMillis());
+
+        if (lastRequestAt.toLocalDateTime().getYear() == now.toLocalDateTime().getYear()
+                && lastRequestAt.toLocalDateTime().getDayOfYear() == now.toLocalDateTime().getDayOfYear()) {
+            return String.format("Today %02d:%02d:%02d",
+                    lastRequestAt.toLocalDateTime().getHour(),
+                    lastRequestAt.toLocalDateTime().getMinute(),
+                    lastRequestAt.toLocalDateTime().getSecond());
+        } else {
+            return String.format("%s %02d:%02d:%02d",
+                    lastRequestAt.toLocalDateTime().toLocalDate().format(java.time.format.DateTimeFormatter.ofPattern("dd MMMM yyyy")),
+                    lastRequestAt.toLocalDateTime().getHour(),
+                    lastRequestAt.toLocalDateTime().getMinute(),
+                    lastRequestAt.toLocalDateTime().getSecond());
+        }
     }
 }
