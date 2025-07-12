@@ -2,12 +2,14 @@ package me.femrek.viewcounter.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.List;
 
 @Entity
 @Table(name = "github_user")
 @Data
+@ToString(exclude = "subscriptions")
 public class GithubUser {
     @Id
     @Column(name = "gh_id")
